@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { FaShoppingCart, FaUser } from "react-icons/fa";
+import { FaPaperPlane, FaShoppingCart, FaSlack, FaUser } from "react-icons/fa";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/actions/userActions";
@@ -28,7 +28,7 @@ export const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
+                <NavDropdown title={userInfo.name} id="username" className="mr-0">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>
                       <FaUser /> Profile
@@ -44,6 +44,25 @@ export const Header = () => {
                     <FaUser /> SignIn
                   </Nav.Link>
                 </LinkContainer>
+              )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="Admin" id="adminMenu">
+                  <LinkContainer to="/admin/userList">
+                    <NavDropdown.Item>
+                      <FaUser /> Users
+                    </NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/productList">
+                    <NavDropdown.Item>
+                      <FaSlack /> Products
+                    </NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/admin/orderList">
+                    <NavDropdown.Item>
+                      <FaPaperPlane /> Orders
+                    </NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>

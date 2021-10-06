@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FormContainer } from "../components/FormContainer";
-import { Link } from "react-router-dom";
 import { Row, Col, Button, Form, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -10,6 +8,8 @@ import {
   updateUserProfile,
 } from "../redux/actions/userActions";
 import { listMyOrders } from "../redux/actions/orderActions";
+import { FaTimes } from "react-icons/fa";
+import { LinkContainer } from "react-router-bootstrap";
 
 const ProfileScreen = ({ location, history }) => {
   const [name, setName] = useState("");
@@ -23,17 +23,21 @@ const ProfileScreen = ({ location, history }) => {
   const { userInfo } = useSelector((state) => state.userLogin);
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
-  const { order, loading: loadingOrders, error: errorOrders } = useSelector((state) => state.orderMyList);
+  const {
+    orders,
+    loading: loadingOrders,
+    error: errorOrders,
+  } = useSelector((state) => state.orderMyList);
 
   useEffect(() => {
-    
     if (!userInfo) {
       history.push("/login");
     } else {
-      if (!user.name) {
+      if (!user || !user.name || userInfo._id !== user._id) {
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
       } else {
+        console.log(user);
         setName(user.name);
         setEmail(user.email);
       }
@@ -116,20 +120,52 @@ const ProfileScreen = ({ location, history }) => {
         </Col>
         <Col md={9}>
           <h2>My Orders</h2>
-          {
-            loadingOrders ? <Loader/> : 
-            errorOrders ? <Message variant="danger">{errorOrders}</Message>
-            : <Table striped bordered hover responsive className="table-sm">
-<thead>
-  <tr>
-    <th>ID</th>
-  </tr>
-  <tr>
-    <th>DATE</th>
-  </tr>
-</thead>
+          {loadingOrders ? (
+            <Loader />
+          ) : errorOrders ? (
+            <Message variant="danger">{errorOrders}</Message>
+          ) : (
+            <Table striped bordered hover responsive className="table-sm">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>DATE</th>
+                  <th>TOTAl</th>
+                  <th>PAID</th>
+                  <th>DELIVERED</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order._id}>
+                    <td>...{order._id.substring(order._id.length - 5, order._id.length - 1)}</td>
+                    <td>{order.createdAt.substring(0, 10)}</td>
+                    <td>{order.totalPrice}</td>
+                    <td>
+                      {order.isPaid ? (
+                        "On " + order.paidAt.substring(0, 10)
+                      ) : (
+                        <FaTimes style={{ color: "red" }} />
+                      )}
+                    </td>
+                    <td>
+                    {order.isDelivered ? (
+                        "On " + order.deliveredAt.substring(0, 10)
+                      ) : (
+                        <FaTimes style={{ color: "red" }} />
+                      )}
+                    </td>
+                    <td>
+                      <LinkContainer to={`/order/${order._id}`}>
+                        <Button className="btn-sm underline" variant="link">More..</Button>
+                      </LinkContainer>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </Table>
-          }
+          )}
         </Col>
       </Row>
     </>
@@ -137,6 +173,5 @@ const ProfileScreen = ({ location, history }) => {
 };
 
 export default ProfileScreen;
-
 
 //  ORDER LIST PAGE al backend done
