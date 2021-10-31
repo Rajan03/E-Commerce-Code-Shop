@@ -4,7 +4,9 @@ import {connectDB} from "./config/db.js";
 import productRoutes from "./routes/productsRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorHandler.js";
+import path from "path";
 
 // Initialize App
 const app = express();
@@ -12,7 +14,7 @@ const app = express();
 // Body parser
 app.use(express.json())
 
-// Enviornment Config Variables
+// Environment Config Variables
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
@@ -23,8 +25,13 @@ connectDB();
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/upload", uploadRoutes)
 
 app.get("/api/config/paypal", (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
+// __dirname is only available with commonJS syntax but is not accessible in ES6 Modules.
+const __dirname = path.resolve();
+app.use(`/uploads`, express.static(path.join(__dirname,'/uploads')));
 
 // Middlewares
 app.use(notFound);
