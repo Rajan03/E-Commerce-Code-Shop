@@ -24,11 +24,11 @@ export const CartScreen = ({ match, location }) => {
   const dispatch = useDispatch();
   const { cartItems } = useSelector((state) => state.cart);
 
-  console.log(cartItems)
   useEffect(() => {
+  console.log(productId)
     if(productId){
         dispatch(addToCartAction(productId, qty))
-    };
+    }
   }, [dispatch, productId, qty]);
 
   const removeFromCartHandler = (id) => {
