@@ -31,6 +31,7 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+/frontend/build
 
 # Dependency directories
 node_modules/
@@ -74,3 +75,7 @@ typings/
 
 # FuseBox cache
 .fusebox/
+.idea/vcs.xml
+.idea/modules.xml
+.idea/MERN E-Comm.iml
+.idea/jsLibraryMappings.xml
